@@ -74,7 +74,7 @@
 
     {#if deployDone}
     <div class="done">
-        Transaction complete: <a href="https://explorer.testnet.mantle.xyz/tx/0x8ab4c4796474267f1f487ab86a52dd735513a1eee4e81f258e7ca05f4ae78d0b">Block explorer tx</a>
+        Transaction complete: <a href="https://explorer.testnet.mantle.xyz/tx/0xaa02046d6ba164075d22cf39502b5ecf7647f78d546fa5bc06b2839b107b03cb">Block explorer tx</a>
         <br />
         You saved {42}% on your smart contract deployment! 🎉
         <br />
