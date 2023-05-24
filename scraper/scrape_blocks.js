@@ -7,7 +7,7 @@ const rpcEndpoint = process.env.RPC_ENDPOINT ?? 'https://rpc.testnet.mantle.xyz'
 const useS3 = !!process.env.USE_S3;
 const s3 = new S3({});
 const s3BucketName = process.env.S3_BUCKET_NAME;
-const s3CursorKey = process.env.S3_CURSOR_KEY ?? 'cursor.json';
+const s3CursorKey = process.env.S3_CURSOR_KEY ?? 'blocks_cursor.json';
 
 async function processBlocks(blocks) {
   // const txHashes = blocks.reduce((a, b) => ([...a, ...b.transactions]), []);
@@ -28,7 +28,7 @@ async function processBlocks(blocks) {
 async function run() {
   const cursor = useS3 ?
     S3Cursor(s3, s3BucketName, s3CursorKey) :
-    FileCursor('cursor.json', 0);
+    FileCursor('blocks_cursor.json', 0);
 
   const latestBlockNumber = await rpc.getLatestIndexedBlockNumber(rpcEndpoint);
   console.log({ latestBlockNumber });
