@@ -12,6 +12,12 @@ The frontend consists of the **live** L1/L2 gas price, and an indication of whet
 
 ![UI](./ui.png)
 
+## Backend
+
+defer.tx uses [Amazon Forecast](https://docs.aws.amazon.com/forecast/latest/dg/what-is-forecast.html), a time-series forecasting service based on machine learning (ML) to predict future gas prices. An api endpoint provides an indication of how likely the gas price is to drop in a given time period and by how much by querying the Amazon Forecast service. We downloaded all the historical blocks for Mantle and the corresponding L1 gas fees and fed them into Amazon forecast.
+
+Smart contract deployed on Mantle using defer.tx: https://explorer.testnet.mantle.xyz/tx/0xaa02046d6ba164075d22cf39502b5ecf7647f78d546fa5bc06b2839b107b03cb
+
 ## Bounties
 
 ### Best Student DApp Project: $6000
