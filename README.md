@@ -1,10 +1,16 @@
 # ⏰ defer.tx
 
-![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](./edudao-hackathon-23.png)
+![EduDAO Student Hackathon Banner](./edudao-hackathon-23.png)
 
 ## Overview
 
 defer.tx helps Mantle users save on gas fees. By using ML forecasting to predict future gas prices, defer.tx knows when to wait to send your transaction when gas fees are lower. Use cases include contract deployments, stop losses, token swaps, loan repayments, recurring payments, TWAPs and more. defer.tx is modular so you can build your own plugins to support any use cases you want!
+
+## Frontend
+
+The frontend consists of the **live** L1/L2 gas price, and an indication of whether the current gas price is high or low. To keep things simple, we provide our recommended amount of time to wait and how much gas you can save (in the example below this is 42% for waiting 7 minutes).
+
+![UI](./ui.png)
 
 ## Bounties
 
