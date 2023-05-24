@@ -1,6 +1,6 @@
 import * as rpc from './rpc.js';
 
-const rpcEndpoint = 'https://rpc.testnet.mantle.xyz' || process.env.RPC_ENDPOINT;
+const rpcEndpoint = process.env.RPC_ENDPOINT || 'https://rpc.testnet.mantle.xyz';
 
 async function run() {
   const latestBlockNumber = await rpc.getLatestIndexedBlockNumber(rpcEndpoint);
