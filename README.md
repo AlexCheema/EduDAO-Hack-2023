@@ -100,7 +100,7 @@ Relevance and impact on the overall Web3 UX
 
 Technical feasibility and implementation quality
 
-#### About
+## About
 
 This is our submission for EduDAO Student Hackathon 2023.
 Team from University of Oxford: Alex, Noah, Mohamed.
