@@ -42,11 +42,6 @@ async function run() {
     const nextBlockNumberTo = Math.min(cursorBlockNumber + blockNumberBatchSize, latestBlockNumber);
     try {
       const blocks = await rpc.scrapeBlocks(rpcEndpoint, cursorBlockNumber + 1, nextBlockNumberTo);
-<<<<<<< HEAD
-      const blockNumbers = blocks.map(b => parseInt(b.number, 16));
-      console.log(`Scraped ${blocks.length} blocks!`, Math.min(...blockNumbers), Math.max(...blockNumbers));
-=======
->>>>>>> s3 for cursor and block storage
       await processBlocks(blocks);
       await cursor.save(nextBlockNumberTo);
       cursorBlockNumber = nextBlockNumberTo;
