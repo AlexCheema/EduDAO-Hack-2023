@@ -1,7 +1,7 @@
 import * as rpc from './rpc.js';
 import { FileCursor, S3Cursor } from './cursor.js';
 import { S3 } from '@aws-sdk/client-s3';
-import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 
 const rpcEndpoint = process.env.RPC_ENDPOINT ?? 'https://rpc.testnet.mantle.xyz';
 const useS3 = !!process.env.USE_S3;
@@ -10,11 +10,8 @@ const s3BucketName = process.env.S3_BUCKET_NAME;
 const s3CursorKey = process.env.S3_CURSOR_KEY ?? 'cursor.json';
 
 async function processBlocks(blocks) {
-  const txHashes = blocks.reduce((a, b) => ([...a, ...b.transactions]), []);
-  console.log(txHashes);
-  const txs = await rpc.getTransactions(rpcEndpoint, txHashes);
-  console.log(JSON.stringify(txs, null, 2));
-  console.log(JSON.stringify(blocks, null, 2));
+  // const txHashes = blocks.reduce((a, b) => ([...a, ...b.transactions]), []);
+  // const txs = await rpc.getTransactions(rpcEndpoint, txHashes);
 
   const blockNumbers = blocks.map(b => parseInt(b.number, 16));
   const min = Math.min(...blockNumbers);
@@ -39,15 +36,25 @@ async function run() {
   let cursorBlockNumber = await cursor.get();
   const blockNumberBatchSize = 1000;
   while (cursorBlockNumber < latestBlockNumber) {
-    const nextBlockNumberTo = Math.min(cursorBlockNumber + blockNumberBatchSize, latestBlockNumber);
     try {
-      const blocks = await rpc.scrapeBlocks(rpcEndpoint, cursorBlockNumber + 1, nextBlockNumberTo);
-      await processBlocks(blocks);
-      await cursor.save(nextBlockNumberTo);
-      cursorBlockNumber = nextBlockNumberTo;
+      const concurrency = 25;
+      const scrapedBlockNumbers = await Promise.all([...Array(concurrency).keys()].map(async (batch) => {
+        const fromBlock = cursorBlockNumber + 1 + batch*blockNumberBatchSize;
+        const toBlock = Math.min(fromBlock + blockNumberBatchSize - 1, latestBlockNumber);
+        if (fromBlock > latestBlockNumber) return [latestBlockNumber, latestBlockNumber];
+
+        console.log(`Sccraping from ${fromBlock} to ${toBlock}`);
+        const blocks = await rpc.scrapeBlocks(rpcEndpoint, fromBlock, toBlock);
+        await processBlocks(blocks);
+
+        return [fromBlock, toBlock];
+      }));
+      const nextCursor = Math.max(...scrapedBlockNumbers.map(bn => bn[1]));
+      await cursor.save(nextCursor);
+      cursorBlockNumber = nextCursor;
     } catch (err) {
       console.error(err);
-      console.log(`error so will try again from block ${cursorBlockNumber} to ${nextBlockNumberTo}`);
+      console.log(`error so will try again from block ${cursorBlockNumber}`);
     }
   }
 }

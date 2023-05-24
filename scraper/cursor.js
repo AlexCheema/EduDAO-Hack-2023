@@ -27,12 +27,14 @@ export function S3Cursor(s3, bucketName, key = 'cursor.json', defaultValue = 0) 
     },
     get: async function() {
       try {
-        const result = await s3.send(new GetObjectCommand({
+        const response = await s3.send(new GetObjectCommand({
           Bucket: bucketName, Key: key
         }));
-        if (!result?.getObjectResult?.Body) return defaultValue;
-        return JSON.parse(result.getObjectResult.Body.transformToString())?.cursor ?? defaultValue;
+        if (!response?.Body) return defaultValue;
+        const responseBody = await response.Body.transformToString();
+        return JSON.parse(responseBody)?.cursor ?? defaultValue;
       } catch (err) {
+        console.error(err);
         return defaultValue;
       }
     },
