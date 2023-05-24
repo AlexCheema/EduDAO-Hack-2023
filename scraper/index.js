@@ -3,6 +3,10 @@ import { FileCursor } from './cursor.js';
 
 const rpcEndpoint = process.env.RPC_ENDPOINT || 'https://rpc.testnet.mantle.xyz';
 
+async function processBlocks(blocks) {
+
+}
+
 async function run() {
   const cursor = FileCursor('cursor.json', 0);
 
@@ -15,7 +19,8 @@ async function run() {
     const nextBlockNumberTo = Math.min(cursorBlockNumber + blockNumberBatchSize, latestBlockNumber);
     try {
       const blocks = await rpc.scrapeBlocks(rpcEndpoint, cursorBlockNumber + 1, nextBlockNumberTo);
-      console.log(`Scraped ${blocks.length} blocks!`, JSON.stringify(blocks.map(b => b.number)));
+      const blockNumbers = blocks.map(b => parseInt(b.number, 16));
+      console.log(`Scraped ${blocks.length} blocks!`, Math.min(...blockNumbers), Math.max(...blockNumbers));
       await cursor.save(nextBlockNumberTo);
       cursorBlockNumber = nextBlockNumberTo;
     } catch (err) {
